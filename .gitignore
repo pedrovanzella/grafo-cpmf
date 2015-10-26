@@ -73,6 +73,7 @@ target/
 # *.ps
 # *.eps
 # *.pdf
+docs/auto/
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl

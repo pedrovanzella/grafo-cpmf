@@ -1,0 +1,61 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{algorithm2e}
+\usepackage{dot2texi}
+
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{float}
+\usetikzlibrary{shapes,arrows}
+\usepackage{bchart}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+ \setlength{\leftmargin}{\labelwidth}
+ \addtolength{\leftmargin}{\labelsep}
+ \renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+%\usepackage{sbc-template}
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+
+\sloppy
+
+\pagenumbering{arabic}
+
+\title{Minimização de Valores de Arestas em um Grafo}
+
+\author{Pedro Vanzella}
+
+\makeatother
+
+\usepackage{babel}
+\usepackage{listings}
+\lstset {
+    mathescape,
+    frame=none
+}
+\renewcommand{\lstlistingname}{Listagem}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}\label{sec:intro}
+
+\section{Estruturas de Dados}\label{sec:estruturas}
+
+\section{Entrada}\label{sec:entrada}
+
+\section{Algoritmos}\label{sec:algoritmos}
+
+\section{Resultados}\label{sec:resultados}
+
+
+\end{document}
