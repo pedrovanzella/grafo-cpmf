@@ -66,6 +66,8 @@ Por exemplo, digamos que haja cinco correntistas, $1$, $2$, $3$, $4$
   \item $2$ transfere $\$200$ para $5$.
 \end{list}
 
+% TODO: Colocar estas duas listas em subfigures e referenciá-las
+
 É possível fazer quatro transferências, respeitando os valores iniciais e finais
 de saldo das contas destes cinco correntistas, mas minimizando o valor de cada
 transferência, de modo a pagar menos imposto:
@@ -86,6 +88,10 @@ correntista $2$ e uma de $\$120$ para o correntista $4$~-~, mas internamente as
 transferências realizadas foram bastante diferentes.
 
 % TODO: mostrar representação em grafo
+
+\begin{dot2tex}[neato,options=-tmath]
+ \input{test_trivial.txt.input.dot}
+\end{dot2tex}
 
 \section{Entrada}\label{sec:entrada}
 
