@@ -6,8 +6,14 @@ class Mardita:
         self.nodes = {}
         self.edges = {}
 
-    def read_file(self):
-        pass
+    def read_file(self, filename):
+        with open(filename) as f:
+            for line in f[1:]:
+                l = line.rstrip()
+                na, nb, val = l.split(" ")
+                self.nodes[na] = True
+                self.nodes[nb] = True
+                self.edges[na + ',' + nb] = val
 
     def reduce_edges(self):
         pass
