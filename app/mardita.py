@@ -3,6 +3,22 @@ import sys
 import pygraphviz as pgv
 
 
+class Node:
+    def __init__(self, name):
+        self.name = name
+        self.vertices = []
+
+    def link_to(self, othernode, val):
+        self.vertices.append(Vertex(self, othernode, val))
+
+
+class Vertex:
+    def __init__(self, fro, to, val):
+        self.fro = fro
+        self.to = to
+        self.val = val
+
+
 class Mardita:
     def __init__(self):
         self.nodes = {}
