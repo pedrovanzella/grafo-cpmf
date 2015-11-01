@@ -22,7 +22,7 @@ class Mardita:
                 self.nodes[na] = True
                 self.nodes[nb] = True
                 # create edges
-                self.edges[na + ',' + nb] = val
+                self.edges[na + ',' + nb] = int(val)
 
     def make_graph(self):
         graph = pgv.AGraph(directed=True)
@@ -41,7 +41,7 @@ class Mardita:
     def remove_edge(self, u, v):
         edge = self.get_edge(u, v)
         if edge is not None:
-            return self.edges.pop(u + ',' + v)
+            return int(self.edges.pop(u + ',' + v))
 
     def adjecent_nodes(self, a):
         nodes = []
@@ -58,7 +58,7 @@ class Mardita:
                     # temos que verificar se temos saldo
                     if self.get_edge(v, a) < self.get_edge(u, v):
                         tmp = self.remove_edge(v, a)
-                        self.edges[u + ',' + v] = tmp
+                        self.edges[u + ',' + v] -= tmp
                         if self.get_edge(u, a):
                             self.edges[u + ',' + a] += tmp
                         else:
