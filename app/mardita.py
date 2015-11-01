@@ -38,7 +38,12 @@ class Mardita:
     def get_edge(self, u, v):
         return self.edges.get(u + ',' + v, None)
 
-    def ajecent_nodes(self, a):
+    def remove_edge(self, u, v):
+        edge = self.get_edge(u, v)
+        if edge is not None:
+            return self.edges.pop(u + ',' + v)
+
+    def adjecent_nodes(self, a):
         nodes = []
         for u in self.nodes:
             if self.get_edge(a, u) is not None:
@@ -47,7 +52,17 @@ class Mardita:
         return nodes
 
     def reduce_edges(self):
-        pass
+        for u in self.nodes:
+            for v in self.adjecent_nodes(u):
+                for a in self.adjecent_nodes(v):
+                    # temos que verificar se temos saldo
+                    if self.get_edge(v, a) < self.get_edge(u, v):
+                        tmp = self.remove_edge(v, a)
+                        self.edges[u + ',' + v] = tmp
+                        if self.get_edge(u, a):
+                            self.edges[u + ',' + a] += tmp
+                        else:
+                            self.edges[u + ',' + a] = tmp
 
 
 if __name__ == "__main__":
@@ -62,3 +77,10 @@ if __name__ == "__main__":
     print("Writing graphiviz file")
     g = m.make_graph()
     g.write("../docs/" + sys.argv[1] + ".input.dot")
+
+    print("Reducing edges")
+    m.reduce_edges()
+
+    print("Writing graphviz file of reduced edges")
+    g = m.make_graph()
+    g.write("../docs/" + sys.argv[1] + ".reduced.dot")
