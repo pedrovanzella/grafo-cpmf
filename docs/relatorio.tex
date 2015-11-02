@@ -140,8 +140,28 @@ transação, o correntista de destino da transação, e o valor da transação. 
 exemplo, na linha 2 da Figura~\ref{fig:entrada:file}, lemos ``\textit{Uma
   transferência de 500 da conta do correntista 1 para a conta do correntista 2.}''.
 
-
 \section{Estrutura de Dados}\label{sec:estrutura}
+
+Para a representação do grafo de transferências, utilizamos dois
+\textit{hashes}, um de nodos e um de arestas. Uma das vantagens disto se dá na
+leitura do arquivo de entrada. Veja o algoritmo da Figura~\ref{fig:estrutura:alg:leitura}.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+Para cada linha l no arquivo, exceto a primeira:
+    partes = l.separa(' ')
+    nodo_a = partes[0]
+    nodo_b = partes[1]
+    valor = partes[2]
+
+    self.nodes[nodo_a] = True
+    self.nodes[nodo_b] = True
+    self.edges[nodo_a + ',' + nodo_b] = valor
+\end{lstlisting}
+  \caption{Algoritmo de criação de nodos e arestas}
+  \label{fig:estrutura:alg:leitura}
+\end{figure}
 
 \section{Algoritmo}\label{sec:algoritmo}
 
