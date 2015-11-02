@@ -6,6 +6,9 @@
 \usepackage{tikz}
 \usepackage{listings}
 \usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \usetikzlibrary{shapes,arrows}
 \usepackage{bchart}
 
@@ -87,15 +90,25 @@ correntista $1$ ainda mostrará duas transferências, uma de $\$500$ para o
 correntista $2$ e uma de $\$120$ para o correntista $4$~-~, mas internamente as
 transferências realizadas foram bastante diferentes.
 
-% TODO: mostrar representação em grafo
-
-\begin{dot2tex}[neato,options=-tmath]
- \input{test_trivial.txt.input.dot}
-\end{dot2tex}
-
-\begin{dot2tex}[neato,options=-tmath]
- \input{test_trivial.txt.reduced.dot}
-\end{dot2tex}
+\begin{figure}[htb!]
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+        \input{test_trivial.txt.input.dot}
+    \end{dot2tex}
+    \caption{Entrada}
+    \label{fig:intro:entrada}
+  \end{subfigure}%
+  ~
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+        \input{test_trivial.txt.reduced.dot}
+    \end{dot2tex}
+    \caption{Saída}
+    \label{fig:intro:saída}
+  \end{subfigure}
+  \caption{Representação da entrada e da saída como grafos}
+\end{figure}
 
 \section{Entrada}\label{sec:entrada}
 

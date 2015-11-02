@@ -58,6 +58,7 @@ class Mardita:
                     # temos que verificar se temos saldo
                     if self.get_edge(v, a) < self.get_edge(u, v):
                         tmp = self.remove_edge(v, a)
+                        # Por que não estou removendo a aresta <3,4> aqui?
                         self.edges[u + ',' + v] -= tmp
                         if self.get_edge(u, a):
                             self.edges[u + ',' + a] += tmp
