@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{wrapfig}
 \usetikzlibrary{shapes,arrows}
 \usepackage{bchart}
 
@@ -111,6 +112,34 @@ transferências realizadas foram bastante diferentes.
 \end{figure}
 
 \section{Entrada}\label{sec:entrada}
+
+\begin{wrapfigure}{r}{0.3\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \begin{lstlisting}
+    5 5
+    1 2 500
+    2 3 230
+    3 4 120
+    1 4 120
+    2 5 200
+    \end{lstlisting}
+  \end{center}
+  \caption{Arquivo de entrada}
+  \vspace{-10pt}
+\label{fig:entrada:file}
+\end{wrapfigure}
+
+O arquivo de entrada é algo no formato mostrado na Figura~\ref{fig:entrada:file}.
+A primeira linha tem dois valores: a quantidade de correntistas e a quantidade
+de transações descritas no arquivo. Como veremos na Sessão~\ref{sec:estrutura},
+estas informações não serão necessárias.
+
+As linhas seguintes têm três valores cada: o correntista que originou a
+transação, o correntista de destino da transação, e o valor da transação. Por
+exemplo, na linha 2 da Figura~\ref{fig:entrada:file}, lemos ``\textit{Uma
+  transferência de 500 da conta do correntista 1 para a conta do correntista 2.}''.
+
 
 \section{Estrutura de Dados}\label{sec:estrutura}
 
