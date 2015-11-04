@@ -142,9 +142,30 @@ exemplo, na linha 2 da Figura~\ref{fig:entrada:file}, lemos ``\textit{Uma
 
 \section{Estrutura de Dados}\label{sec:estrutura}
 
-Para a representação do grafo de transferências, utilizamos dois
-\textit{hashes}, um de nodos e um de arestas. Uma das vantagens disto se dá na
-leitura do arquivo de entrada. Veja o algoritmo da Figura~\ref{fig:estrutura:alg:leitura}.
+Inicialmente, pensou-se em utilizar \textit{hashes} um de nodos e um de arestas.
+O problema com isto é que, ao iterar por um \textit{hash}, não se pode alterar
+seu tamanho.
+
+Resolveu-se então utilizar-se listas de adjacência, com a estrutura mostrada na
+Figura~\ref{fig:estrutura:classes}.
+
+\begin{figure}[htb!]
+    \begin{lstlisting}
+class Graph:
+    public list<Node> nodes
+
+    class Node:
+        public int val
+        public list<Edge> edges
+
+    class Edge:
+        public Node from
+        public Node to
+        public int val
+    \end{lstlisting}
+  \caption{Representação das classes do grafo}
+\label{fig:estrutura:classes}
+\end{figure}
 
 \begin{figure}[htb!]
   \centering
