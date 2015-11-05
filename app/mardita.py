@@ -10,7 +10,9 @@ class Graph:
         self.nodes = []
 
     def add_node(self, val):
-        # THIS IS PROBABLY WRONG
+        for n in self.nodes:
+            if n.val == val:
+                return n
         n = Graph.Node(val)
         self.nodes.append(n)
         return n
