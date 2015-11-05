@@ -4,6 +4,8 @@ from __future__ import print_function
 import sys
 import pygraphviz as pgv
 
+DEBUG = True
+
 
 class Graph:
     def __init__(self):
@@ -12,6 +14,8 @@ class Graph:
     def add_node(self, val):
         for n in self.nodes:
             if n.val == val:
+                if DEBUG:
+                    print("Added %r" % n)
                 return n
         n = Graph.Node(val)
         self.nodes.append(n)
@@ -23,14 +27,22 @@ class Graph:
             self.edges = []
 
         def add_edge(self, to, val):
-            # THIS IS WRONG
+            for e in self.edges:
+                if e.to == to:
+                    if DEBUG:
+                        print("%r Already exists" % e)
+                    return e
             e = Graph.Edge(self, to, val)
             self.edges.append(e)
+            if DEBUG:
+                print("Added %r" % e)
             return e
 
         def remove_edge(self, edge):
             val = edge.val
             self.edges.remove(edge)
+            if DEBUG:
+                print("Remove %r" % edge)
             return val
 
         def __repr__(self):
@@ -57,7 +69,12 @@ class Graph:
             self.val = int(val)
 
         def update_val(self, val):
+            print("Old val: %r" % self)
             self.val += val
+            print("New val: %r" % self)
+
+        def __repr__(self):
+            return "<Edge: (%r -> %r) = %d>" % (self.fro, self.to, self.val)
 
 
 class Mardita:
@@ -71,23 +88,24 @@ class Mardita:
                 # strip trailing spaces
                 l = line.rstrip()
                 # split on spaces
-                na, nb, val = l.split(" ")
+                a, b, val = l.split(" ")
                 # create nodes
-                nan = self.graph.add_node(na)
-                nbn = self.graph.add_node(nb)
+                na = self.graph.add_node(a)
+                nb = self.graph.add_node(b)
                 # create edge
-                nan.add_edge(nbn, val)
+                na.add_edge(nb, val)
 
     def make_graph(self):
         graph = pgv.AGraph(directed=True)
         for u in self.graph.nodes:
             graph.add_node(u.val)
-            for e in u.edges:
-                graph.add_edge(u.val, e.to.val, label=e.val)
+            for v in u.adjecent_nodes:
+                graph.add_edge(u.val, v.val, label=u.get_edge(v).val)
 
         return graph
 
     def reduce_edges(self):
+        # Tenho que fazer isto com lista e push pop
         for u in self.graph.nodes:
             print("adj(%r): %r" % (u, u.adjecent_nodes))
             for v in u.adjecent_nodes:
