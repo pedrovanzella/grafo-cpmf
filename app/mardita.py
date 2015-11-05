@@ -10,6 +10,7 @@ class Graph:
         self.nodes = []
 
     def add_node(self, val):
+        # THIS IS PROBABLY WRONG
         n = Graph.Node(val)
         self.nodes.append(n)
         return n
@@ -20,18 +21,38 @@ class Graph:
             self.edges = []
 
         def add_edge(self, to, val):
+            # THIS IS WRONG
             e = Graph.Edge(self, to, val)
             self.edges.append(e)
             return e
 
         def remove_edge(self, edge):
+            val = edge.val
             self.edges.remove(edge)
+            return val
+
+        def __repr__(self):
+            return "<Node %s>" % self.val
+
+        @property
+        def adjecent_nodes(self):
+            nodes = []
+            for e in self.edges:
+                if e.to not in nodes:
+                    nodes.append(e.to)
+            return nodes
+
+        def get_edge(self, v):
+            for e in self.edges:
+                if e.to == v:
+                    return e
+            return None
 
     class Edge:
         def __init__(self, fro, to, val):
             self.fro = fro
             self.to = to
-            self.val = val
+            self.val = int(val)
 
         def update_val(self, val):
             self.val += val
@@ -57,50 +78,26 @@ class Mardita:
 
     def make_graph(self):
         graph = pgv.AGraph(directed=True)
-        for u in self.nodes:
-            graph.add_node(u)
-            for v in self.nodes:
-                val = self.get_edge(u, v)
-                if val is not None:
-                    graph.add_edge(u, v, label=val)
+        for u in self.graph.nodes:
+            graph.add_node(u.val)
+            for e in u.edges:
+                graph.add_edge(u.val, e.to.val, label=e.val)
 
         return graph
 
-    def get_edge(self, u, v):
-        return self.edges.get(u + ',' + v, None)
-
-    def remove_edge(self, u, v):
-        edge = self.get_edge(u, v)
-        if edge is not None:
-            return int(self.edges.pop(u + ',' + v))
-
-    def adjecent_nodes(self, a):
-        # Temos que retornar com _next_ e afins
-        # para atualizar a lista sempre
-        nodes = []
-        for u in self.nodes:
-            if self.get_edge(a, u) is not None:
-                nodes.append(u)
-
-        return nodes
-
     def reduce_edges(self):
-        for u in self.nodes:
-            for v in self.adjecent_nodes(u):
-                for a in self.adjecent_nodes(v):
-                    # temos que verificar se temos saldo
-                    if self.get_edge(v, a) <= self.get_edge(u, v):
-                        # remove esta aresta
-                        tmp = self.remove_edge(v, a)
-                        self.edges[u + ',' + v] -= tmp
-                        if self.get_edge(u, a):
-                            # Se a aresta jah existe, aumenta o valor
-                            self.edges[u + ',' + a] += tmp
+        for u in self.graph.nodes:
+            print("adj(%r): %r" % (u, u.adjecent_nodes))
+            for v in u.adjecent_nodes:
+                for a in v.adjecent_nodes:
+                    if v.get_edge(a).val < u.get_edge(v).val:
+                        tmp = v.get_edge(a).val
+                        v.remove_edge(v.get_edge(a))
+                        u.get_edge(v).update_val(-tmp)
+                        if u.get_edge(a) is not None:
+                            u.get_edge(a).update_val(tmp)
                         else:
-                            # Senao, cria ela
-                            # quando eu crio esta aresta, o iterador nao eh
-                            # alterado
-                            self.edges[u + ',' + a] = tmp
+                            u.add_edge(a, tmp)
 
 
 if __name__ == "__main__":
