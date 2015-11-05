@@ -107,8 +107,10 @@ class Mardita:
     def reduce_edges(self):
         # Tenho que fazer isto com lista e push pop
         for u in self.graph.nodes:
-            print("adj(%r): %r" % (u, u.adjecent_nodes))
-            for v in u.adjecent_nodes:
+            vs = u.adjecent_nodes
+            print("adj(%r): %r" % (u, vs))
+            while len(vs) > 0:
+                v = vs.pop()
                 for a in v.adjecent_nodes:
                     if v.get_edge(a).val < u.get_edge(v).val:
                         tmp = v.get_edge(a).val
@@ -118,6 +120,7 @@ class Mardita:
                             u.get_edge(a).update_val(tmp)
                         else:
                             u.add_edge(a, tmp)
+                            vs.append(a)
 
 
 if __name__ == "__main__":
