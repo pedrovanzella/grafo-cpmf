@@ -4,7 +4,7 @@ from __future__ import print_function
 import sys
 import pygraphviz as pgv
 
-DEBUG = True
+DEBUG = False
 
 
 class Graph:
@@ -20,6 +20,14 @@ class Graph:
         n = Graph.Node(val)
         self.nodes.append(n)
         return n
+
+    @property
+    def edges(self):
+        edges = []
+        for n in self.nodes:
+            for e in n.edges:
+                edges.append(e)
+        return edges
 
     class Node:
         def __init__(self, val):
@@ -69,9 +77,11 @@ class Graph:
             self.val = int(val)
 
         def update_val(self, val):
-            print("Old val: %r" % self)
+            if DEBUG:
+                print("Old val: %r" % self)
             self.val += val
-            print("New val: %r" % self)
+            if DEBUG:
+                print("New val: %r" % self)
 
         def __repr__(self):
             return "<Edge: (%r -> %r) = %d>" % (self.fro, self.to, self.val)
@@ -104,11 +114,18 @@ class Mardita:
 
         return graph
 
+    def total_tax_payed(self):
+        total_transactions = 0
+        for e in self.graph.edges:
+            total_transactions += e.val
+        return total_transactions * 0.01
+
     def reduce_edges(self):
         # Tenho que fazer isto com lista e push pop
         for u in self.graph.nodes:
             vs = u.adjecent_nodes
-            print("adj(%r): %r" % (u, vs))
+            if DEBUG:
+                print("adj(%r): %r" % (u, vs))
             while len(vs) > 0:
                 v = vs.pop()
                 for a in v.adjecent_nodes:
@@ -128,17 +145,34 @@ if __name__ == "__main__":
         print("Uso: %s [arquivo]" % sys.argv[0])
         exit()
 
+    if len(sys.argv) == 3 and sys.argv[2] == 'DEBUG':
+        DEBUG = True
+
     m = Mardita()
-    print("Reading file and creating graph")
+    if DEBUG:
+        print("Reading file and creating graph")
     m.read_file(sys.argv[1])
 
-    print("Writing graphiviz file")
-    g = m.make_graph()
-    g.write("../docs/" + sys.argv[1] + ".input.dot")
+    if DEBUG:
+        print("Writing graphiviz file")
+        g = m.make_graph()
+        g.write("../docs/" + sys.argv[1] + ".input.dot")
 
-    print("Reducing edges")
+    tax_before = m.total_tax_payed()
+    if DEBUG:
+        print("Total tax payed: ", tax_before)
+
+    if DEBUG:
+        print("Reducing edges")
     m.reduce_edges()
 
-    print("Writing graphviz file of reduced edges")
-    g = m.make_graph()
-    g.write("../docs/" + sys.argv[1] + ".reduced.dot")
+    if DEBUG:
+        print("Writing graphviz file of reduced edges")
+        g = m.make_graph()
+        g.write("../docs/" + sys.argv[1] + ".reduced.dot")
+
+    tax_after = m.total_tax_payed()
+    if DEBUG:
+        print("Total tax payed: ", tax_after)
+
+    print("Total savings: ", tax_before - tax_after)
