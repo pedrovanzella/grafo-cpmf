@@ -5,6 +5,40 @@
 
 \usepackage{tikz}
 \usepackage{listings}
+
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=L,    	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  otherkeywords={*,...},           % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{caption}
@@ -167,22 +201,97 @@ class Graph:
 \label{fig:estrutura:classes}
 \end{figure}
 
+Para ler o arquivo de entrada e criar os nodos e arestas, utilizamos o algoritmo
+da Figura~\ref{fig:estrutura:alg:leitura}. Veja que ele está na classe
+\textsf{\textbf{Mardita}}, que contém uma instância do grafo.
+
 \begin{figure}[htb!]
   \centering
 \begin{lstlisting}
-Para cada linha l no arquivo, exceto a primeira:
-    partes = l.separa(' ')
-    nodo_a = partes[0]
-    nodo_b = partes[1]
-    valor = partes[2]
+void Mardita::read_file(arquivo)
+    Para cada linha l no arquivo, exceto a primeira:
+        partes = l.separa(' ')
 
-    self.nodes[nodo_a] = True
-    self.nodes[nodo_b] = True
-    self.edges[nodo_a + ',' + nodo_b] = valor
+        nodo_a = self.graph.add_node(partes[0])
+        nodo_b = self.graph.add_node(partes[1])
+
+        nodo_a.add_edge(nodo_b, partes[2])
 \end{lstlisting}
   \caption{Algoritmo de criação de nodos e arestas}
-  \label{fig:estrutura:alg:leitura}
+\label{fig:estrutura:alg:leitura}
 \end{figure}
+
+Onde \textsf{add\_node} está descrito na Figura~\ref{fig:estrutura:alg:add_node}
+e \textsf{add\_edge} está descrito na Figura~\ref{fig:estrutura:alg:add_edge}.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+Node Graph::add_node(val):
+    para todo n em self.nodes:
+        se n.val == val:
+            return n
+    n = Graph.Node(val)
+    self.nodes.add(n)
+    return n
+\end{lstlisting}
+  \caption{Algoritmo de criação de nodos e arestas}
+\label{fig:estrutura:alg:add_node}
+\end{figure}
+
+O algoritmo \textsf{add\_node} (Figura~\ref{fig:estrutura:alg:add_node}),
+que pertence à classe \textsf{\textbf{Graph}}, primeiro verifica se já há um
+nodo com este nome em sua coleção de nodos. Caso haja, retorna ele. Se não
+houver, chama o construtor da classe \textsf{\textbf{Node}} para criar um novo
+nodo, adiciona à sua coleção e então retorna o nodo criado.
+
+A primeira vista, poderíamos ter utilizado um \textit{set} em vez de uma lista
+para armazenar a coleção de nodos, dado que não queremos dois nodos iguais nela.
+No entanto, a unicidade garantida seria do objeto nodo, quando queremos na
+verdade a unicidade do nome do nodo.
+
+Caso a implementação tivesse sido feita com um hash, o algoritmo seria como o
+descrito na Figura~\ref{fig:estrutura:alg:add_node_hash}.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+void Graph::add_node(val):
+    self.nodes[val] = True
+\end{lstlisting}
+  \caption{Algoritmo de criação de nodos e arestas}
+\label{fig:estrutura:alg:add_node_hash}
+\end{figure}
+
+Veja que esta versão de \textsf{add\_node} não precisa verificar a existência do
+nodo. No entanto, também não há uma classe \textsf{\textbf{Node}}, e não
+retornamos nada. O modo de acesso seria ligeiramente diferente.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+Edge Node::add_edge(to, val):
+    para cada e em self.edges:
+        se e.to == to:
+            return e
+
+    e = Graph.Edge(self, to, val)
+    self.edges.add(e)
+    return e
+\end{lstlisting}
+  \caption{Algoritmo de criação de nodos e arestas}
+\label{fig:estrutura:alg:add_edge}
+\end{figure}
+
+O algoritmo \textsf{add\_edge} (Figura~\ref{fig:estrutura:alg:add_edge}) é
+parecido com o algoritmo \textsf{add\_node}
+(Figura~\ref{fig:estrutura:alg:add_node}), pois ele verifica a unicidade da
+aresta. A diferença é que arestas são consideradas iguais caso suas origens e
+destinos sejam iguais, para este problema. Como estamos verificando todas as
+arestas que partem de um nodo, basta comparar o destino.
+
+O construtor da aresta recebe três parâmetros: \textit{de onde}, \textit{para
+  onde} e o \textit{valor} da aresta.
 
 \section{Algoritmo}\label{sec:algoritmo}
 
