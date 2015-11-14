@@ -428,6 +428,51 @@ $1.50$ de imposto (\textit{i.e.}, $1\%$ de $150$), enquanto na
 Figura~\ref{fig:reduce:abc:saida} pagaríamos $1.00$ de impost (\textit{i.e.},
 $1\%$ de $100$).
 
+
+\subsection{Detalhes de Implementação}
+
+Note que há um detalhe de implementação no algoritmo da
+Figura~\ref{fig:algoritmo:reduce_edges}: dependendo da linguagem, ao ler os
+adjacentes de um nodo, teremos uma cópia da lista de adjacentes. Ao inserir uma
+nova aresta em um nodo, esta lista possivelmente não seria alterada, e é
+importante analisarmos esta nova aresta também.
+
+Neste caso, deve ser utilizada a versão da Figura~\ref{fig:algoritmo:reduce_edges:push_pop}.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+void Mardita::reduce_edges():
+    Para todo nodo u em self.graph.nodes:
+        vs = adjacentes(u)
+        Enquanto vs nao esta vazia
+            v = vs.pop()
+            Para cada nodo a adjacente a v:
+                 se valor(Aresta<v, a>) < valor(Aresta<u, v>):
+                     tmp = valor(Aresta<v, a>)
+                     remove Aresta<v, a>
+                     valor(Aresta<u, v>) diminui de tmp
+
+                     se ja existe aresta entre u e a:
+                          valor(Aresta<u, a>) aumenta de tmp
+                     senao:
+                          cria Aresta<u, a> com valor tmp
+                          vs.add(a)
+\end{lstlisting}
+  \caption{Algoritmo que reduz as arestas, versão com uma lista auxiliar}
+\label{fig:algoritmo:reduce_edges:push_pop}
+\end{figure}
+
+Vemos na Figura~\ref{fig:algoritmo:reduce_edges:push_pop} algumas diferenças que
+auxiliam na implementação do algoritmo. Mais especificamente, em vez de
+simplesmente iterarmos por todos os adjacentes de \textsf{u}, adicionamos todos
+eles a uma lista (linha 3), e vamos removendo-os um a um, até que a lista
+esvazie (linha 4). Sempre que uma aresta nova é criada, adicionamos esta aresta
+à lista \textsf{vs} (linha 16).
+
+Esta versão do algoritmo também resolveria o problema apresentado na
+Sessão~\ref{sec:estrutura} com \textit{hashes}.
+
 \section{Resultados}\label{sec:resultados}
 
 \begin{table}[H]
@@ -458,8 +503,25 @@ Teste & Economia & Transações & Tempo de Execução \\ [0.5ex]
 \hline
 \end{tabular}
 
-\label{tab:resultados}
 \caption{Resultados dos testes da Turma 128}
 \end{table}
+
+É possível ver na Tabela~1 que há uma economia significativa
+em cada um dos casos de teste, e o processamento ocorre em um tempo bem aceitável.
+
+Vemos também que o tempo de processamento é proporcional ao número de
+transações. Isto faz sentido, dado que cada transação é uma aresta no grafo.
+
+De fato, o algoritmo passará por cada aresta uma vez, e apenas uma vez. Isto
+daria uma complexidade de $O(e)$, onde $e$ é o número de arestas. No entanto,
+novas arestas são criadas, e estas devem ser verificadas por transitividade, de
+modo a otimizar ao máximo as transações. Como cada par de arestas pode gerar uma
+nova aresta, a complexidade fica $O(e + \frac{e}{2})$. No entanto, a notação $O$
+despresa os termos constantes, e ficamos novamente com $O(e)$.
+
+\section{Conclusão}\label{sec:conclusao}
+
+Há, possivelmente, a possibilidade de reduzir mais ainda algumas arestas. Esta é
+apenas uma solução possível, e não necessariamente a melhor.
 
 \end{document}
