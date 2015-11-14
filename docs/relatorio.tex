@@ -295,6 +295,59 @@ O construtor da aresta recebe três parâmetros: \textit{de onde}, \textit{para
 
 \section{Algoritmo}\label{sec:algoritmo}
 
+Há duas coisas a serem feitas para resolver o problema: precisamos calcular
+quanto imposto é pago (Sessão~\ref{sec:algoritmo:total_tax}) e reduzir o número
+de arestas do grafo (Sessão~\ref{sec:algoritmo:reduce}).
+
+\subsection{Cálculo de Total de Imposto Pago}\label{sec:algoritmo:total_tax}
+
+Este algoritmo é executado duas vezes~-~uma antes de reduzir-se as arestas, e
+uma após, de modo a sabermos qual foi a economia.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+float Mardita::total_tax_payed():
+    total = 0
+    Para todo e em self.graph.edges:
+         total += e.valor
+    return total * 0.01
+\end{lstlisting}
+  \caption{Algoritmo de cálculo do total de imposto pago}
+\label{fig:algoritmo:total_tax}
+\end{figure}
+
+Na Figura~\ref{fig:algoritmo:total_tax} vemos como o total de imposto é
+calculado. Apenas soma-se o valor de todas as arestas e multiplica-se por
+$0.01$, que é o valor do imposto.
+
+Nota-se que está acessando-se a propriedade \textsf{edges} da classe
+\textsf{\textbf{Graph}}, mas a mesma não parecia ter acesso às arestas, conforme
+visto na Figura~\ref{fig:estrutura:classes}.
+
+De fato, a lista de arestas está na classe \textsf{\textbf{Node}}. Para termos
+acesso a elas, basta termos um método na classe \textsf{\textbf{Graph}} que
+itera por todos os nodos, coletando todas as arestas. A unicidade das arestas é
+garantida no momento de inserção, então pode-se fazer como é visto na Figura~\ref{fig:algoritmo:all_edges}.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+List<Edge> Graph::edges():
+    edges = [] // Lista vazia
+    Para todo n em self.nodes:
+        para todo e em n.edges:
+            edges.add(e)
+    return edges
+\end{lstlisting}
+  \caption{Algoritmo que coleta todas as arestas de todos os nodos}
+\label{fig:algoritmo:all_edges}
+\end{figure}
+
+\subsection{Redução das Arestas}\label{sec:algoritmo:reduce}
+
+Este é o algoritmo principal, onde o problema é de fato solucionado.
+
 \section{Resultados}\label{sec:resultados}
 
 
