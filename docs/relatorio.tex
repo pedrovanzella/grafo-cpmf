@@ -143,6 +143,7 @@ transferências realizadas foram bastante diferentes.
     \label{fig:intro:saída}
   \end{subfigure}
   \caption{Representação da entrada e da saída como grafos}
+  \label{fig:intro}
 \end{figure}
 
 \section{Entrada}\label{sec:entrada}
@@ -346,7 +347,83 @@ List<Edge> Graph::edges():
 
 \subsection{Redução das Arestas}\label{sec:algoritmo:reduce}
 
-Este é o algoritmo principal, onde o problema é de fato solucionado.
+Este é o algoritmo principal, onde o problema é de fato solucionado. O
+pseudocódigo pode ser visto na Figura~\ref{fig:algoritmo:reduce_edges}.
+
+\begin{figure}[htb!]
+  \centering
+\begin{lstlisting}
+void Mardita::reduce_edges():
+    Para todo nodo u em self.graph.nodes:
+        Para cada nodo v adjacente a u:
+            Para cada nodo a adjacente a v:
+                 se valor(Aresta<v, a>) < valor(Aresta<u, v>):
+                     tmp = valor(Aresta<v, a>)
+                     remove Aresta<v, a>
+                     valor(Aresta<u, v>) diminui de tmp
+
+                     se ja existe aresta entre u e a:
+                          valor(Aresta<u, a>) aumenta de tmp
+                     senao:
+                          cria Aresta<u, a> com valor tmp
+\end{lstlisting}
+  \caption{Algoritmo que reduz as arestas}
+\label{fig:algoritmo:reduce_edges}
+\end{figure}
+
+A idéia do algoritmo de Redução de Arestas é encontrar transitividade entre os
+nodos~-~isto é, para um grafo $G = {n, e}$ com $n = {A, B, C}$ e $e = {(A, B, x),
+  (B, C, y)}$, gerar uma nova aresta $(A, C, x - y)$, remover a aresta $(B, C,
+x)$ e alterar o valor da aresta $(A, B)$ para $y - x$.
+
+Para isto, encontra-se os ``amigos dos amigos'' de cada nodo no grafo (linhas
+2-4 da Figura~\ref{fig:algoritmo:reduce_edges}). A verificação da linha 5 é
+importante para que não criemos uma transação de valor negativo.
+
+Caso a verificação da linha 5 seja positiva, podemos atualizar o valor da
+primeira aresta $(u, v)$, subtraindo o valor da aresta $(v, a)$. Também
+removemos a aresta $(v, a)$ do grafo.
+
+O próximo passo é criar a aresta $(u, a)$. Há um porém: a aresta $(u, a)$ pode
+já existir. Neste caso, apenas soma-se o valor da aresta $(v, a)$. Caso a aresta
+não exista, cria-se uma aresta $(u, a)$ com o valor da aresta $(v, a)$.
+
+Um exemplo mínimo disto pode ser visto na Figura~\ref{fig:reduce:abc}.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+        \input{test_abc.input.dot}
+    \end{dot2tex}
+    \caption{Entrada}
+    \label{fig:reduce:abc:entrada}
+  \end{subfigure}%
+  ~
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+        \input{test_abc.reduced.dot}
+    \end{dot2tex}
+    \caption{Saída}
+    \label{fig:reduce:abc:saida}
+  \end{subfigure}
+  \caption{Redução aplicada a um grafo simples.}
+  \label{fig:reduce:abc}
+\end{figure}
+
+Pode-se facilmente validar o algoritmo com um teste de mesa na
+Figura~\ref{fig:reduce:abc}, ou mesmo na Figura~\ref{fig:intro}.
+
+Olhando-se para a Figura~\ref{fig:reduce:abc}, vemos que os saldos dos
+correntistas são os mesmos (\textit{i.e.}, o correntista $1$ teve uma redução de
+$100$ em seu saldo, o correntista $2$ teve um aumento de $50$, bem como o
+correntista $3$). A única coisa que mudou entre a
+Figura~\ref{fig:reduce:abc:entrada} e a Figura~\ref{fig:reduce:abc:saida} foram
+os valores e os destinos das transferências. Somando-se e multiplicando pelo
+valor do imposto, vemos que na Figura~\ref{fig:reduce:abc:entrada} pagaríamos
+$1.50$ de imposto (\textit{i.e.}, $1\%$ de $150$), enquanto na
+Figura~\ref{fig:reduce:abc:saida} pagaríamos $1.00$ de impost (\textit{i.e.},
+$1\%$ de $100$).
 
 \section{Resultados}\label{sec:resultados}
 
