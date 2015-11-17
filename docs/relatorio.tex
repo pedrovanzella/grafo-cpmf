@@ -369,28 +369,60 @@ garantida no momento de inserção, então pode-se fazer como é visto no Algori
 Este é o algoritmo principal, onde o problema é de fato solucionado. O
 pseudocódigo pode ser visto na Figura~\ref{fig:algoritmo:reduce_edges}.
 
-\begin{figure}[htb!]
-  \centering
-\begin{lstlisting}
-void Mardita::reduce_edges():
-    Para todo nodo u em self.graph.nodes:
-        Para cada nodo v adjacente a u:
-            Para cada nodo a adjacente a v:
-                 se valor(Aresta<v, a>) < valor(Aresta<u, v>):
-                     tmp = valor(Aresta<v, a>)
-                     remove Aresta<v, a>
-                     valor(Aresta<u, v>) diminui de tmp
+\begin{algorithm}[H]
+  \caption{Redução de Arestas}
+  \label{alg:reduce_edges}
+  \Classe{Mardita}
+  \ParaTodo{u em self.graph.nodes}
+  {
+    vs $\gets$ adjacentes de u
 
-                     se ja existe aresta entre u e a:
-                          valor(Aresta<u, a>) aumenta de tmp
-                     senao:
-                          cria Aresta<u, a> com valor tmp
-\end{lstlisting}
-  \caption{Algoritmo que reduz as arestas}
-\label{fig:algoritmo:reduce_edges}
-\end{figure}
+    \Enqto{vs não estiver vazia}
+    {
+      v $\gets$ vs.pop() \tcc*[r]{Remove um elemento de vs}
+      \ParaTodo{a adjacente a v}
+      {
+        \Se{valor de <v, a> $<$ valor de <u, v>}
+        {
+          tmp $\gets$ valor de <v,a>
 
-A idéia do algoritmo de Redução de Arestas é encontrar transitividade entre os
+          remove <v, a>
+
+          valor de <u,v> $\gets$ diminui de tmp
+
+          \Se{já existe aresta entre u e a}
+          {
+            valor de <u, a> $\gets$ aumenta de tmp
+          }
+          \Senao
+          {
+            cria aresta <u, a> com valor tmp
+
+            vs $\gets$ a \tcc*[r]{Nodo a agora é adjacente de u}
+          }
+        }
+        \Senao{
+          \Se{v está em vs}
+          {
+            remove v de vs \tcc*[r]{v pode ter sido conectado novamente graças a
+            um ciclo}
+          }
+          tmp $\gets$ valor de <u,v>
+
+          remove <u,v>
+
+          valor de <v,a> $\gets$ diminui de tmp
+
+          cria aresta <u,a> com valor tmp
+
+          vs $\gets$ a \tcc*[r]{Nodo a é agora é adjacentes de u}
+        }
+      }
+    }
+  }
+\end{algorithm}
+
+A idéia do Algoritmo~\ref{alg:reduce_edges} é encontrar transitividade entre os
 nodos~-~isto é, para um grafo $G = {n, e}$ com $n = {A, B, C}$ e $e = {(A, B, x),
   (B, C, y)}$, gerar uma nova aresta $(A, C, x - y)$, remover a aresta $(B, C,
 x)$ e alterar o valor da aresta $(A, B)$ para $y - x$.
