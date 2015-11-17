@@ -39,7 +39,8 @@ class Graph:
                 if e.to == to:
                     if DEBUG:
                         print("%r Already exists" % e)
-                    return e.update_val(val)  # aumenta o valor da aresta
+                        # Se edge jah existe, aumenta o valor dela
+                    return e.update_val(val)
             e = Graph.Edge(self, to, val)
             self.edges.append(e)
             if DEBUG:
@@ -123,6 +124,7 @@ class Mardita:
     def reduce_edges(self):
         if DEBUG:
             count = 0
+        # Tenho que fazer isto com lista e push pop
         for u in self.graph.nodes:
             vs = u.adjecent_nodes
             if DEBUG:
@@ -132,20 +134,20 @@ class Mardita:
                 for a in v.adjecent_nodes:
                     if DEBUG:
                         count += 1
-                    tmp = v.get_edge(a).val
-                    if tmp < u.get_edge(v).val:
+                    if v.get_edge(a).val < u.get_edge(v).val:
+                        tmp = v.get_edge(a).val
                         v.remove_edge(v.get_edge(a))
                         u.get_edge(v).update_val(-tmp)
+                        if u.get_edge(a) is not None:
+                            u.get_edge(a).update_val(tmp)
+                        else:
+                            u.add_edge(a, tmp)
+                            vs.append(a)
                     else:
-                        u.remove_edge(u.get_edge(v))
+                        tmp = u.remove_edge(u.get_edge(v))
                         v.get_edge(a).update_val(-tmp)
-
-                    if u.get_edge(a) is not None:
-                        u.get_edge(a).update_val(tmp)
-                    else:
                         u.add_edge(a, tmp)
                         vs.append(a)
-
         if DEBUG:
             print("Count: ", count)
 
