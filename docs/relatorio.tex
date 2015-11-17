@@ -1,6 +1,5 @@
 \documentclass[12pt]{article}
 \usepackage[T1]{fontenc}
-\usepackage{algorithm2e}
 \usepackage{dot2texi}
 
 \usepackage{tikz}
@@ -65,6 +64,12 @@
 
 \usepackage[brazil]{babel}
 \usepackage[utf8]{inputenc}
+
+\usepackage[portuguese,ruled,vlined]{algorithm2e}
+\usepackage{algorithmic}
+
+\SetKwInput{Classe}{Classe}
+
 
 \sloppy
 
@@ -205,45 +210,50 @@ class Graph:
 \label{fig:estrutura:classes}
 \end{figure}
 
-Para ler o arquivo de entrada e criar os nodos e arestas, utilizamos o algoritmo
-da Figura~\ref{fig:estrutura:alg:leitura}. Veja que ele está na classe
+Para ler o arquivo de entrada e criar os nodos e arestas, utilizamos o
+Algoritmo~\ref{alg:estrtutura:leitura}. Veja que ele está na classe
 \textsf{\textbf{Mardita}}, que contém uma instância do grafo.
 
-\begin{figure}[htb!]
-  \centering
-\begin{lstlisting}
-void Mardita::read_file(arquivo)
-    Para cada linha l no arquivo, exceto a primeira:
-        partes = l.separa(' ')
+\begin{algorithm}[H]
+ \caption{Criação de Nodos e Arestas}
+ \label{alg:estrutura:leitura}
+ \Classe{Mardita}
+ \Entrada{Arquivo como o da Figura~\ref{fig:entrada:file}}
+ \Saida{Instância da classe \textsf{\textbf{Graph}}}
+ \ParaCada{linha l no arquivo, exceto a primeira}
+    {
+        partes $\gets$ l.separa(' ') \tcc*[r]{Separa a linha nos espaços}
 
-        nodo_a = self.graph.add_node(partes[0])
-        nodo_b = self.graph.add_node(partes[1])
+        nodo\_a $\gets$ self.graph.add\_node(partes[0])
 
-        nodo_a.add_edge(nodo_b, partes[2])
-\end{lstlisting}
-  \caption{Algoritmo de criação de nodos e arestas}
-\label{fig:estrutura:alg:leitura}
-\end{figure}
+        nodo\_b $\gets$ self.graph.add\_node(partes[1])
+
+        nodo\_a.add\_edge(nodo\_b, partes[2]) \tcc*[r]{Liga A com B, com valor partes[2]}
+    }
+\end{algorithm}
 
 Onde \textsf{add\_node} está descrito na Figura~\ref{fig:estrutura:alg:add_node}
 e \textsf{add\_edge} está descrito na Figura~\ref{fig:estrutura:alg:add_edge}.
 
-\begin{figure}[htb!]
-  \centering
-\begin{lstlisting}
-Node Graph::add_node(val):
-    para todo n em self.nodes:
-        se n.val == val:
-            return n
-    n = Graph.Node(val)
-    self.nodes.add(n)
-    return n
-\end{lstlisting}
-  \caption{Algoritmo de criação de nodos e arestas}
-\label{fig:estrutura:alg:add_node}
-\end{figure}
+\begin{algorithm}[H]
+  \caption{Criação de Nodos}
+  \label{alg:estrutura:add_node}
+  \Classe{Graph}
+  \Entrada{val: Inteiro, representando o nome do Nodo}
+  \Saida{Instância da classe \textbf{\textsf{Node}}}
+  \ParaTodo{n em self.nodes}
+  {
+    \Se{n.val $=$ val}
+    {
+      \Retorna{n} \tcc*[r]{Se o nodo já existe, retorna ele}
+    }
+    n $\gets$ Graph.Node(val) \tcc*[r]{Chama o construtor de Node}
+    self.nodes.add(n) \tcc*[r]{Adiciona à lista de nodos}
+    \Retorna{n}
+  }
+\end{algorithm}
 
-O algoritmo \textsf{add\_node} (Figura~\ref{fig:estrutura:alg:add_node}),
+O Algoritmo~\ref{alg:estrutura:add_node},
 que pertence à classe \textsf{\textbf{Graph}}, primeiro verifica se já há um
 nodo com este nome em sua coleção de nodos. Caso haja, retorna ele. Se não
 houver, chama o construtor da classe \textsf{\textbf{Node}} para criar um novo
@@ -255,17 +265,15 @@ No entanto, a unicidade garantida seria do objeto nodo, quando queremos na
 verdade a unicidade do nome do nodo.
 
 Caso a implementação tivesse sido feita com um hash, o algoritmo seria como o
-descrito na Figura~\ref{fig:estrutura:alg:add_node_hash}.
+descrito no Algoritmo~\ref{alg:estrutura:add_node_hash}.
 
-\begin{figure}[htb!]
-  \centering
-\begin{lstlisting}
-void Graph::add_node(val):
-    self.nodes[val] = True
-\end{lstlisting}
-  \caption{Algoritmo de criação de nodos e arestas}
-\label{fig:estrutura:alg:add_node_hash}
-\end{figure}
+\begin{algorithm}[H]
+  \caption{Criação de Nodo, caso a classe seja implementada com um Hash}
+  \label{alg:estrutura:add_node_hash}
+  \Classe{Graph}
+  \Entrada{val: Inteiro, representando o nome do Nodo}
+  self.nodes[val] $=$ True
+\end{algorithm}
 
 Veja que esta versão de \textsf{add\_node} não precisa verificar a existência do
 nodo. No entanto, também não há uma classe \textsf{\textbf{Node}}, e não

@@ -39,7 +39,7 @@ class Graph:
                 if e.to == to:
                     if DEBUG:
                         print("%r Already exists" % e)
-                    return e
+                    return e.update_val(val)  # aumenta o valor da aresta
             e = Graph.Edge(self, to, val)
             self.edges.append(e)
             if DEBUG:
@@ -79,7 +79,7 @@ class Graph:
         def update_val(self, val):
             if DEBUG:
                 print("Old val: %r" % self)
-            self.val += val
+            self.val += int(val)
             if DEBUG:
                 print("New val: %r" % self)
 
@@ -121,7 +121,8 @@ class Mardita:
         return total_transactions * 0.01
 
     def reduce_edges(self):
-        # Tenho que fazer isto com lista e push pop
+        if DEBUG:
+            count = 0
         for u in self.graph.nodes:
             vs = u.adjecent_nodes
             if DEBUG:
@@ -129,15 +130,24 @@ class Mardita:
             while len(vs) > 0:
                 v = vs.pop()
                 for a in v.adjecent_nodes:
-                    if v.get_edge(a).val < u.get_edge(v).val:
-                        tmp = v.get_edge(a).val
+                    if DEBUG:
+                        count += 1
+                    tmp = v.get_edge(a).val
+                    if tmp < u.get_edge(v).val:
                         v.remove_edge(v.get_edge(a))
                         u.get_edge(v).update_val(-tmp)
-                        if u.get_edge(a) is not None:
-                            u.get_edge(a).update_val(tmp)
-                        else:
-                            u.add_edge(a, tmp)
-                            vs.append(a)
+                    else:
+                        u.remove_edge(u.get_edge(v))
+                        v.get_edge(a).update_val(-tmp)
+
+                    if u.get_edge(a) is not None:
+                        u.get_edge(a).update_val(tmp)
+                    else:
+                        u.add_edge(a, tmp)
+                        vs.append(a)
+
+        if DEBUG:
+            print("Count: ", count)
 
 
 if __name__ == "__main__":
