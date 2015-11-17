@@ -68,7 +68,11 @@ class Graph:
         def get_edge(self, v):
             for e in self.edges:
                 if e.to == v:
+                    if DEBUG:
+                        print("Get Edge: %r -> %r: OK" % (self, v))
                     return e
+            if DEBUG:
+                print("Get Edge: %r -> %r: FAIL" % (self, v))
             return None
 
     class Edge:
@@ -136,6 +140,8 @@ class Mardita:
                         count += 1
                     if v.get_edge(a).val < u.get_edge(v).val:
                         tmp = v.get_edge(a).val
+                        if DEBUG:
+                            print("Removendo <v,a>")
                         v.remove_edge(v.get_edge(a))
                         u.get_edge(v).update_val(-tmp)
                         if u.get_edge(a) is not None:
@@ -144,10 +150,15 @@ class Mardita:
                             u.add_edge(a, tmp)
                             vs.append(a)
                     else:
+                        if DEBUG:
+                            print("Removendo <u,v>")
+                        if v in vs:
+                            vs.remove(v)
                         tmp = u.remove_edge(u.get_edge(v))
                         v.get_edge(a).update_val(-tmp)
                         u.add_edge(a, tmp)
                         vs.append(a)
+                        break
         if DEBUG:
             print("Count: ", count)
 
