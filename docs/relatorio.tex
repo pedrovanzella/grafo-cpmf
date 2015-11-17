@@ -430,6 +430,28 @@ Um exemplo mínimo disto pode ser visto na Figura~\ref{fig:reduce:abc}.
   \label{fig:reduce:abc}
 \end{figure}
 
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+      \input{test_uva.input.dot}
+    \end{dot2tex}
+    \caption{Entrada}
+    \label{fig:reduce:uva:entrada}
+  \end{subfigure}%
+  ~
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+      \input{test_uva.reduced.dot}
+    \end{dot2tex}
+    \caption{Entrada}
+    \label{fig:reduce:uva:saida}
+  \end{subfigure}
+  \caption{Redução aplicada a um grafo onde o valor de <v,a> é superior ao de
+    <u,v>}
+  \label{fig:reduce:uva}
+\end{figure}
+
 Pode-se facilmente validar o algoritmo com um teste de mesa na
 Figura~\ref{fig:reduce:abc}, ou mesmo na Figura~\ref{fig:intro}.
 
@@ -443,51 +465,6 @@ valor do imposto, vemos que na Figura~\ref{fig:reduce:abc:entrada} pagaríamos
 $1.50$ de imposto (\textit{i.e.}, $1\%$ de $150$), enquanto na
 Figura~\ref{fig:reduce:abc:saida} pagaríamos $1.00$ de impost (\textit{i.e.},
 $1\%$ de $100$).
-
-
-\subsection{Detalhes de Implementação}
-
-Note que há um detalhe de implementação no algoritmo da
-Figura~\ref{fig:algoritmo:reduce_edges}: dependendo da linguagem, ao ler os
-adjacentes de um nodo, teremos uma cópia da lista de adjacentes. Ao inserir uma
-nova aresta em um nodo, esta lista possivelmente não seria alterada, e é
-importante analisarmos esta nova aresta também.
-
-Neste caso, deve ser utilizada a versão da Figura~\ref{fig:algoritmo:reduce_edges:push_pop}.
-
-\begin{figure}[htb!]
-  \centering
-\begin{lstlisting}
-void Mardita::reduce_edges():
-    Para todo nodo u em self.graph.nodes:
-        vs = adjacentes(u)
-        Enquanto vs nao esta vazia
-            v = vs.pop()
-            Para cada nodo a adjacente a v:
-                 se valor(Aresta<v, a>) < valor(Aresta<u, v>):
-                     tmp = valor(Aresta<v, a>)
-                     remove Aresta<v, a>
-                     valor(Aresta<u, v>) diminui de tmp
-
-                     se ja existe aresta entre u e a:
-                          valor(Aresta<u, a>) aumenta de tmp
-                     senao:
-                          cria Aresta<u, a> com valor tmp
-                          vs.add(a)
-\end{lstlisting}
-  \caption{Algoritmo que reduz as arestas, versão com uma lista auxiliar}
-\label{fig:algoritmo:reduce_edges:push_pop}
-\end{figure}
-
-Vemos na Figura~\ref{fig:algoritmo:reduce_edges:push_pop} algumas diferenças que
-auxiliam na implementação do algoritmo. Mais especificamente, em vez de
-simplesmente iterarmos por todos os adjacentes de \textsf{u}, adicionamos todos
-eles a uma lista (linha 3), e vamos removendo-os um a um, até que a lista
-esvazie (linha 4). Sempre que uma aresta nova é criada, adicionamos esta aresta
-à lista \textsf{vs} (linha 16).
-
-Esta versão do algoritmo também resolveria o problema apresentado na
-Sessão~\ref{sec:estrutura} com \textit{hashes}.
 
 \section{Resultados}\label{sec:resultados}
 
