@@ -317,20 +317,22 @@ de arestas do grafo (Sessão~\ref{sec:algoritmo:reduce}).
 Este algoritmo é executado duas vezes~-~uma antes de reduzir-se as arestas, e
 uma após, de modo a sabermos qual foi a economia.
 
-\begin{figure}[htb!]
-  \centering
-\begin{lstlisting}
-float Mardita::total_tax_payed():
-    total = 0
-    Para todo e em self.graph.edges:
-         total += e.valor
-    return total * 0.01
-\end{lstlisting}
-  \caption{Algoritmo de cálculo do total de imposto pago}
-\label{fig:algoritmo:total_tax}
-\end{figure}
+\begin{algorithm}[H]
+  \caption{Cálculo de Imposto Pago}
+  \label{alg:total_tax}
+  \Classe{Mardita}
+  \Entrada{Todas as arestas do grafo}
+  \Saida{Total de imposto pago}
+  total $\gets$ $0$
 
-Na Figura~\ref{fig:algoritmo:total_tax} vemos como o total de imposto é
+  \ParaTodo{e em self.graph.edges}
+  {
+    total $\gets$ total $+$ e.valor
+  }
+  \Retorna{total $\times$ $0.01$}
+\end{algorithm}
+
+No Algoritmo~\ref{alg:total_tax} vemos como o total de imposto é
 calculado. Apenas soma-se o valor de todas as arestas e multiplica-se por
 $0.01$, que é o valor do imposto.
 
@@ -341,21 +343,26 @@ visto na Figura~\ref{fig:estrutura:classes}.
 De fato, a lista de arestas está na classe \textsf{\textbf{Node}}. Para termos
 acesso a elas, basta termos um método na classe \textsf{\textbf{Graph}} que
 itera por todos os nodos, coletando todas as arestas. A unicidade das arestas é
-garantida no momento de inserção, então pode-se fazer como é visto na Figura~\ref{fig:algoritmo:all_edges}.
+garantida no momento de inserção, então pode-se fazer como é visto no Algoritmo~\ref{alg:all_edges}.
 
-\begin{figure}[htb!]
-  \centering
-\begin{lstlisting}
-List<Edge> Graph::edges():
-    edges = [] // Lista vazia
-    Para todo n em self.nodes:
-        para todo e em n.edges:
-            edges.add(e)
-    return edges
-\end{lstlisting}
-  \caption{Algoritmo que coleta todas as arestas de todos os nodos}
-\label{fig:algoritmo:all_edges}
-\end{figure}
+\begin{algorithm}[H]
+  \caption{Coleção de todas as arestas}
+  \label{alg:all_edges}
+  \Classe{Node}
+  \Entrada{Uma instância da classe \textsf{textbf{Graph}}}
+  \Saida{Uma lista de instâncias da classe \textsf{\textbf{Edge}}}
+  inicializa edges como uma lista vazia
+
+  \ParaTodo{n em self.nodes}
+  {
+    \ParaTodo{e em n.edges}
+    {
+      adiciona e em edges
+    }
+  }
+
+  \Retorna{edges}
+\end{algorithm}
 
 \subsection{Redução das Arestas}\label{sec:algoritmo:reduce}
 
