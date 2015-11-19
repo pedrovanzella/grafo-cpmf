@@ -105,8 +105,8 @@
 \section{Introdução}\label{sec:intro}
 
 Uma recente mudança na regulamentação de impostos reativou uma antiga taxa sobre
-operações financeiras. Esta taxa, chamada de CPMF, incide em $\%$ sobre toda e qualquer
-transação bancária.
+operações financeiras. Esta taxa, chamada de CPMF, incide em $1\%$ sobre toda e
+qualquer transação bancária.
 
 Um banco teve a idéia de minimizar o valor total pago deste imposto através de
 atalhos em transferências realizadas internamente.
@@ -140,7 +140,8 @@ alterado~-~apenas os valores parciais mudaram e, com eles, o valor pago em impos
 Do ponto de vista dos correntistas, nada mudou~-~\textit{e.g.} o extrato do
 correntista $1$ ainda mostrará duas transferências, uma de $\$500$ para o
 correntista $2$ e uma de $\$120$ para o correntista $4$~-~, mas internamente as
-transferências realizadas foram bastante diferentes.
+transferências realizadas foram bastante diferentes. Podemos ver uma
+representação gráfica disto na Figura~\ref{fig:intro}.
 
 \begin{figure}[htb!]
   \centering
@@ -182,26 +183,36 @@ transferências realizadas foram bastante diferentes.
 \label{fig:entrada:file}
 \end{wrapfigure}
 
-O arquivo de entrada é algo no formato mostrado na Figura~\ref{fig:entrada:file}.
+O arquivo de entrada está no formato mostrado na Figura~\ref{fig:entrada:file}.
 A primeira linha tem dois valores: a quantidade de correntistas e a quantidade
-de transações descritas no arquivo. Como veremos na Sessão~\ref{sec:estrutura},
+de transações descritas no arquivo. Como veremos na Seção~\ref{sec:estrutura},
 estas informações não serão necessárias.
 
 As linhas seguintes têm três valores cada: o correntista que originou a
 transação, o correntista de destino da transação, e o valor da transação. Por
 exemplo, na linha 2 da Figura~\ref{fig:entrada:file}, lemos ``\textit{Uma
-  transferência de 500 da conta do correntista 1 para a conta do correntista 2.}''.
+transferência de 500 da conta do correntista 1 para a conta do correntista 2.}''.
+
+Este arquivo de entrada representa o exemplo da Seção~\ref{sec:intro} e da
+Figura~\ref{fig:intro:entrada}.
 
 \section{Estrutura de Dados}\label{sec:estrutura}
 
-Inicialmente, pensou-se em utilizar \textit{hashes} um de nodos e um de arestas.
-O problema com isto é que, ao iterar por um \textit{hash}, não se pode alterar
-seu tamanho.
+A estrutura escolhida para representar o grafo foi a de Lista de Adjacências, como
+mostrado na Figura~\ref{fig:estrutura:classes}.
 
-Resolveu-se então utilizar-se listas de adjacência, com a estrutura mostrada na
-Figura~\ref{fig:estrutura:classes}.
+Outras alternativas, como a representação em Matriz de Adjacências também são
+possíveis, acarretando custos diferentes para acessos e remoções. No entanto, o
+acesso aos adjacentes de um nodo por Lista de Adjacentes se dá em $O(adj)$,
+enquanto por Matriz de Adjacências se dá em $O(n)$, onde $n$ é o número de nodos
+do grafo. Como espera-se que haja menos arestas em um nodo do que nodos no
+grafo, a performance da Lista de Adjacências tende a ser ligeiramente melhor
+para esta aplicação.
 
-\begin{figure}[htb!]
+No entanto, o fator principal para a escolha da representação por Lista de
+Adjacências foi a facilidade de se trabalhar com ela.
+
+\begin{figure}[H]
     \begin{lstlisting}
 class Graph:
     public list<Node> nodes
@@ -220,7 +231,7 @@ class Graph:
 \end{figure}
 
 Para ler o arquivo de entrada e criar os nodos e arestas, utilizamos o
-Algoritmo~\ref{alg:estrtutura:leitura}. Veja que ele está na classe
+Algoritmo~\ref{alg:estrutura:leitura}. Veja que ele está na classe
 \textsf{\textbf{Mardita}}, que contém uma instância do grafo.
 
 \begin{algorithm}[H]
@@ -241,8 +252,8 @@ Algoritmo~\ref{alg:estrtutura:leitura}. Veja que ele está na classe
     }
 \end{algorithm}
 
-Onde \textsf{add\_node} está descrito na Figura~\ref{fig:estrutura:alg:add_node}
-e \textsf{add\_edge} está descrito na Figura~\ref{fig:estrutura:alg:add_edge}.
+Onde \textsf{add\_node} está descrito no Algoritmo~\ref{alg:estrutura:add_node}
+e \textsf{add\_edge} está descrito no Algoritmo~\ref{alg:estrutura:add_edge}.
 
 \begin{algorithm}[H]
   \caption{Criação de Nodos}
@@ -273,21 +284,6 @@ para armazenar a coleção de nodos, dado que não queremos dois nodos iguais ne
 No entanto, a unicidade garantida seria do objeto nodo, quando queremos na
 verdade a unicidade do nome do nodo.
 
-Caso a implementação tivesse sido feita com um hash, o algoritmo seria como o
-descrito no Algoritmo~\ref{alg:estrutura:add_node_hash}.
-
-\begin{algorithm}[H]
-  \caption{Criação de Nodo, caso a classe seja implementada com um Hash}
-  \label{alg:estrutura:add_node_hash}
-  \Classe{Graph}
-  \Entrada{val: Inteiro, representando o nome do Nodo}
-  self.nodes[val] $=$ True
-\end{algorithm}
-
-Veja que esta versão de \textsf{add\_node} não precisa verificar a existência do
-nodo. No entanto, também não há uma classe \textsf{\textbf{Node}}, e não
-retornamos nada. O modo de acesso seria ligeiramente diferente.
-
 \begin{algorithm}[H]
   \caption{Criação de Arestas}
   \label{alg:estrutura:add_edge}
@@ -308,18 +304,47 @@ retornamos nada. O modo de acesso seria ligeiramente diferente.
 
 O Algoritmo~\ref{alg:estrutura:add_edge} é
 parecido com o Algoritmo~\ref{alg:estrutura:add_node}, pois ele verifica a unicidade da
-aresta. A diferença é que arestas são consideradas iguais caso suas origens e
-destinos sejam iguais, para este problema. Como estamos verificando todas as
-arestas que partem de um nodo, basta comparar o destino.
+aresta. A diferença é que arestas são consideradas iguais, neste problema caso
+suas origens e destinos sejam iguais. Como estamos verificando todas as arestas
+que partem de um nodo, basta comparar o destino.
 
 O construtor da aresta recebe três parâmetros: \textit{de onde}, \textit{para
   onde} e o \textit{valor} da aresta.
 
+Caso a aresta já exista, soma-se o valor das transações, de modo a criar apenas
+uma aresta entre dois nodos. Um exemplo disto pode ser visto na
+Figura~\ref{fig:double_edge}. O grafo da Figura~\ref{fig:double_edge:bad}
+representa duas transações, com a mesma origem e o mesmo destino. Ao somar-se o
+valor de suas arestas, temos o grafo da Figura~\ref{fig:double_edge:good}. Este
+é o que é utilizado pelo algoritmo.
+
+\begin{figure}[htb!]
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+        \input{double_edge.dot}
+    \end{dot2tex}
+    \caption{Entrada}
+    \label{fig:double_edge:bad}
+  \end{subfigure}%
+  ~
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{dot2tex}[neato,options=-tmath]
+        \input{double_edge_fixed.dot}
+    \end{dot2tex}
+    \caption{Saída}
+    \label{fig:double_edge:good}
+  \end{subfigure}
+  \caption{Consolidação de arestas com mesma origem e destino}
+  \label{fig:double_edge}
+\end{figure}
+
+
 \section{Algoritmo}\label{sec:algoritmo}
 
 Há duas coisas a serem feitas para resolver o problema: precisamos calcular
-quanto imposto é pago (Sessão~\ref{sec:algoritmo:total_tax}) e reduzir o número
-de arestas do grafo (Sessão~\ref{sec:algoritmo:reduce}).
+quanto imposto é pago (Seção~\ref{sec:algoritmo:total_tax}) e reduzir o número
+de arestas do grafo (Seção~\ref{sec:algoritmo:reduce}).
 
 \subsection{Cálculo de Total de Imposto Pago}\label{sec:algoritmo:total_tax}
 

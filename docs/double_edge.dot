@@ -1,0 +1,4 @@
+strict digraph {
+  1 -> 2   [label=50];
+  1 -> 2   [label=20];
+}
