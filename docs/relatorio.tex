@@ -421,8 +421,11 @@ pseudocódigo pode ser visto no Algoritmo~\ref{alg:reduce_edges}.
         \Se{valor de <v, a> $<$ valor de <u, v>}
         {
           tmp $\gets$ valor de <v,a>;
+
           remove <v, a>;
+
           valor de <u,v> $\gets$ diminui de tmp;
+
           cria aresta <u, a> com valor tmp;
         }
         \Senao{
@@ -432,10 +435,14 @@ pseudocódigo pode ser visto no Algoritmo~\ref{alg:reduce_edges}.
             um ciclo}
           }
           tmp $\gets$ valor de <u,v>;
+
           remove <u,v>;
+
           valor de <v,a> $\gets$ diminui de tmp;
+
           cria aresta <u,a> com valor tmp;
-          vs $\gets$ a \tcc*[r]{Nodo a é agora é adjacentes de u};
+
+          vs $\gets$ a \tcc*[r]{Nodo a é agora é adjacentes de u}
         }
       }
     }
