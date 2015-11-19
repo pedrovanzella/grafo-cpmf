@@ -538,6 +538,11 @@ $1\%$ de $100$), o que representa uma economia de $0.50$.
 
 \section{Resultados}\label{sec:resultados}
 
+Podemos ver na Tabela~\ref{tab:resultados} a economia em cada caso de teste, bem
+como uma comparação da quantidade de transações (arestas no grafo) com a
+quantidade de iterações feitas pelo Algoritmo~\ref{alg:reduce_edges}. Na
+Figura~\ref{fig:graph:arestas_iteracoes} podemos ver um gráfico plotando esta comparação.
+
 \begin{table}[H]
   \centering
 \begin{tabular}{||c|c||c|c|c||}
@@ -595,23 +600,14 @@ Teste & Economia & Transações & Iterações \\ [0.5ex]
 
 \end{axis}
 \end{tikzpicture}
+\captionof{figure}{Arestas vs Iterações}
+\label{fig:graph:arestas_iteracoes}
 
-É possível ver na Tabela~\ref{tab:resultados} que há uma economia significativa
-em cada um dos casos de teste, e o processamento ocorre em um tempo bem aceitável.
-
-Vemos também que o tempo de processamento é proporcional ao número de
-transações. Isto faz sentido, dado que cada transação é uma aresta no grafo.
-
-De fato, o algoritmo passará por cada aresta uma vez, e apenas uma vez. Isto
-daria uma complexidade de $O(e)$, onde $e$ é o número de arestas. No entanto,
-novas arestas são criadas, e estas devem ser verificadas por transitividade, de
-modo a otimizar ao máximo as transações. Como cada par de arestas pode gerar uma
-nova aresta, a complexidade fica $O(e + \frac{e}{2})$. No entanto, a notação $O$
-despresa os termos constantes, e ficamos novamente com $O(e)$.
+% TODO
 
 \section{Conclusão}\label{sec:conclusao}
 
-Há, possivelmente, a possibilidade de reduzir mais ainda algumas arestas. Esta é
-apenas uma solução possível, e não necessariamente a melhor.
+É possível ver na Tabela~\ref{tab:resultados} que há uma economia significativa
+em cada um dos casos de teste.
 
 \end{document}
