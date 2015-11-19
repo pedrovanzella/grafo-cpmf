@@ -418,22 +418,10 @@ pseudocódigo pode ser visto no Algoritmo~\ref{alg:reduce_edges}.
       {
         \Se{valor de <v, a> $<$ valor de <u, v>}
         {
-          tmp $\gets$ valor de <v,a>
-
-          remove <v, a>
-
-          valor de <u,v> $\gets$ diminui de tmp
-
-          \Se{já existe aresta entre u e a}
-          {
-            valor de <u, a> $\gets$ aumenta de tmp
-          }
-          \Senao
-          {
-            cria aresta <u, a> com valor tmp
-
-            vs $\gets$ a \tcc*[r]{Nodo a agora é adjacente de u}
-          }
+          tmp $\gets$ valor de <v,a>;
+          remove <v, a>;
+          valor de <u,v> $\gets$ diminui de tmp;
+          cria aresta <u, a> com valor tmp;
         }
         \Senao{
           \Se{v está em vs}
@@ -441,15 +429,11 @@ pseudocódigo pode ser visto no Algoritmo~\ref{alg:reduce_edges}.
             remove v de vs \tcc*[r]{v pode ter sido conectado novamente graças a
             um ciclo}
           }
-          tmp $\gets$ valor de <u,v>
-
-          remove <u,v>
-
-          valor de <v,a> $\gets$ diminui de tmp
-
-          cria aresta <u,a> com valor tmp
-
-          vs $\gets$ a \tcc*[r]{Nodo a é agora é adjacentes de u}
+          tmp $\gets$ valor de <u,v>;
+          remove <u,v>;
+          valor de <v,a> $\gets$ diminui de tmp;
+          cria aresta <u,a> com valor tmp;
+          vs $\gets$ a \tcc*[r]{Nodo a é agora é adjacentes de u};
         }
       }
     }
@@ -461,19 +445,18 @@ nodos~-~isto é, para um grafo $G = \{n, e\}$ com $n = \{A, B, C\}$ e $e = \{(A,
   (B, C, y)\}$, gerar uma nova aresta $(A, C, x - y)$, remover a aresta $(B, C,
 x)$ e alterar o valor da aresta $(A, B)$ para $y - x$.
 
-Para isto, encontra-se os ``amigos dos amigos'' de cada nodo no grafo (linhas
-2-4 da Figura~\ref{fig:algoritmo:reduce_edges}). A verificação da linha 5 é
-importante para que não criemos uma transação de valor negativo.
+Há dois casos possíveis: o valor da primeira aresta pode ser maior que o da
+segunda (Figura~\ref{fig:reduce:abc:entrada}) ou o valor da primeira aresta pode
+ser menor ou igual ao da segunda (Figura~\ref{fig:reduce:uva:entrada}).
 
-Caso a verificação da linha 5 seja positiva, podemos atualizar o valor da
-primeira aresta $(u, v)$, subtraindo o valor da aresta $(v, a)$. Também
-removemos a aresta $(v, a)$ do grafo.
+Na Figura~\ref{fig:reduce:abc} vemos o primeiro caso. Aqui pega-se o valor da
+aresta $(2,3)$, diminui-se ela da aresta $(1,2)$, remove-se $(2,3)$ e
+cria-se $(1,3)$, com o valor que se tinha em $(1,2)$. O resultado disto, aplicado à
+Figura~\ref{fig:reduce:abc:entrada} pode ser visto na Figura~\ref{fig:reduce:abc:saida}.
 
-O próximo passo é criar a aresta $(u, a)$. Há um porém: a aresta $(u, a)$ pode
-já existir. Neste caso, apenas soma-se o valor da aresta $(v, a)$. Caso a aresta
-não exista, cria-se uma aresta $(u, a)$ com o valor da aresta $(v, a)$.
-
-Um exemplo mínimo disto pode ser visto na Figura~\ref{fig:reduce:abc}.
+Caso já exista uma aresta $(1,3)$, isto não é um problema, já que o
+Algoritmo~\ref{alg:estrutura:add_edge} cuida para que, ao adicionar uma aresta
+já existente, o valor da aresta seja apenas aumentado.
 
 \begin{figure}[H]
   \centering
@@ -495,6 +478,24 @@ Um exemplo mínimo disto pode ser visto na Figura~\ref{fig:reduce:abc}.
   \caption{Redução aplicada a um grafo simples.}
   \label{fig:reduce:abc}
 \end{figure}
+
+Na Figura~\ref{fig:reduce:uva} vemos o segundo caso. A entrada
+(Figura~\ref{fig:reduce:uva:entrada}) tem uma aresta $(1,2)$ com valor inferior
+à aresta $(2,3)$. Neste caso, pegamos o valor de $(1,2)$ e removemos esta
+aresta. Então, subtraímos este valor da aresta $(2,3)$ e criamos a aresta
+$(1,3)$ com este mesmo valor. Isto gera o resultado visto na
+Figura~\ref{fig:reduce:uva:saida}.
+
+Novamente não precisamos nos preocupar ao adicionar uma aresta com o caso da
+mesma já existir, já que o Algoritmo~\ref{alg:estrutura:add_edge} já cuida disto.
+
+Há ainda um outro detalhe neste segundo caso: é possível que a aresta
+intermediária (no caso da Figura~\ref{fig:reduce:uva}, a aresta 2), ter sido
+adicionada novamente à lista de adjacentes da primeira aresta (pelo
+\textsf{senão} do primeiro caso). Neste caso, é importante verificarmos a
+existência dela e removê-la da lista, para evitarmos acessar um ponteiro
+inválido ao tentar encontrar uma aresta entre \textsf{u} e \textsf{v} numa
+iteração futura do laço \textsf{enquanto}.
 
 \begin{figure}[H]
   \centering
@@ -519,7 +520,8 @@ Um exemplo mínimo disto pode ser visto na Figura~\ref{fig:reduce:abc}.
 \end{figure}
 
 Pode-se facilmente validar o algoritmo com um teste de mesa na
-Figura~\ref{fig:reduce:abc}, ou mesmo na Figura~\ref{fig:intro}.
+Figura~\ref{fig:reduce:abc}, na Figura~\ref{fig:reduce:uva}, ou mesmo na
+Figura~\ref{fig:intro}.
 
 Olhando-se para a Figura~\ref{fig:reduce:abc}, vemos que os saldos dos
 correntistas são os mesmos (\textit{i.e.}, o correntista $1$ teve uma redução de
@@ -530,7 +532,7 @@ os valores e os destinos das transferências. Somando-se e multiplicando pelo
 valor do imposto, vemos que na Figura~\ref{fig:reduce:abc:entrada} pagaríamos
 $1.50$ de imposto (\textit{i.e.}, $1\%$ de $150$), enquanto na
 Figura~\ref{fig:reduce:abc:saida} pagaríamos $1.00$ de impost (\textit{i.e.},
-$1\%$ de $100$).
+$1\%$ de $100$), o que representa uma economia de $0.50$.
 
 \section{Resultados}\label{sec:resultados}
 
