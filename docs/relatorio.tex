@@ -589,6 +589,13 @@ Teste & Economia & Transações & Iterações \\ [0.5ex]
     grid style=dashed,
 ]
 
+\addplot [
+     domain=0:300,
+     samples=100,
+     color=red,
+    ]{0.000120509*x^3 + 0.0460933*x^2 - 14.8593*x + 1046.9};
+    \addlegendentry{$O(e^3)$}
+
 \addplot[
     color=blue,
     mark=square,
@@ -596,18 +603,43 @@ Teste & Economia & Transações & Iterações \\ [0.5ex]
     coordinates {
     (91,192)(99,155)(140,222)(153,280)(165,320)(165,304)(186,884)(232,528)(235,2648)(264,2533)
     };
-    \legend{Teste}
+    \addlegendentry{Teste}
 
 \end{axis}
 \end{tikzpicture}
 \captionof{figure}{Arestas vs Iterações}
 \label{fig:graph:arestas_iteracoes}
 
-% TODO
+Avaliar a complexidade da solução é difícil, dado que os laços mais internos
+dependem de valores que mudam com cada iteração e com cada entrada (\textit{i.e.
+depende da quantidade de arestas que saem de cada nodo}). No entanto, uma função
+cúbica, como $O(e^3)$ parece se ajustar moderadamente bem aos pontos, quando
+ignoramos algumas constantes e variações.
+
+Como todos os casos de teste tinham a mesma quantidade de nodos, não foi
+possível avaliar a dependência da complexidade do problema na quantidade de nodos.
+
+No entanto, ao analisarmos o Algoritmo~\ref{alg:reduce_edges}, vemos três laços
+aninhados, o que é tipicamente uma marca de uma função cúbica. De fato, a
+complexidade parece depender do número de nodos adjacentes a cada nodo, em algo
+como $O(n) \times O(adj(n)) \times O(adj(adj(n)))$.
 
 \section{Conclusão}\label{sec:conclusao}
 
 É possível ver na Tabela~\ref{tab:resultados} que há uma economia significativa
 em cada um dos casos de teste.
+
+É possível que a escolha de Matriz de Adjacência seja melhor do que Lista de
+Adjacência para a resolução deste problema, dado que a complexidade de buscar,
+inserir ou remover uma aresta com Matriz de Adjacência é $O(n)$, onde $n$ é o
+número de nodos do grafo, enquanto com Lista de Adjacência a complexidade destas
+operações é $O(adj(u))$, onde $adj(u)$ é o número de nodos adjacentes a um nodo $u$.
+
+No entanto, o uso de memória de Lista de Adjacência cresce linearmente com a
+quantidade de nodos e arestas ($(O(n + e))$), enquanto o uso de memória da
+Matriz de Adjacência cresce na ordem de $O(n^2)$.
+
+No fim, esta escolha é irrelevante para o tamanho do problema, e a escolha de
+utilizar-se Lista de Adjacências tornou o código mais limpo e fácil de se compreender.
 
 \end{document}
